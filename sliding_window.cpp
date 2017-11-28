@@ -1,6 +1,7 @@
 /*
  * Competive Programming - UniPi.
  * Pietro Paolini - 2017
+ * Complexity : O(n)
  */
 #include <iostream>
 #include <vector>
@@ -12,15 +13,15 @@ std::vector<int> SWM(std::vector<int> const& A, int k)
   deque<int> Q;
   vector<int> result;
   
-  for (int i = 0; i < A.size(); i++) {
+  for (int i = 0; i < A.size(); i++) {  // O(n)
 
-    // Remove elements outside of the window.
+    // Remove elements outside of the window. O(k)
     while (!Q.empty() && Q.front() <= i-k ) {
       Q.pop_front();
     }
 
     // Remove elements from the back which are smaller than the one under
-    // examination, add it at the back right after.
+    // examination, add it at the back right after. O(k)
     while (!Q.empty() && A[Q.back()] <= A[i]) {
       Q.pop_back();
     }
