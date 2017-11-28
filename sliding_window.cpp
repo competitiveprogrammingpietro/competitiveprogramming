@@ -1,23 +1,27 @@
+/*
+ * Competive Programming - UniPi.
+ * Pietro Paolini - 2017
+ */
 #include <iostream>
 #include <vector>
 #include <deque>
 
 using namespace std;
-std::vector<int> SWM(std::vector<int> const& A, unsigned int k)
+std::vector<int> SWM(std::vector<int> const& A, int k)
 {
-  deque<unsigned int> Q;
+  deque<int> Q;
   vector<int> result;
   
-  for (unsigned int i = 0; i < A.size(); i++) {
+  for (int i = 0; i < A.size(); i++) {
 
     // Remove elements outside of the window.
-    while (!Q.empty() && Q.front() <= i-k )
+    while (!Q.empty() && Q.front() <= i-k ) {
       Q.pop_front();
+    }
 
     // Remove elements from the back which are smaller than the one under
     // examination, add it at the back right after.
     while (!Q.empty() && A[Q.back()] <= A[i]) {
-      cout << A[Q.back()] << "<=" << A[i] << endl;
       Q.pop_back();
     }
     
@@ -62,4 +66,3 @@ int main() {
     cout << endl;
   }
 }
-
