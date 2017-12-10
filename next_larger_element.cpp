@@ -15,11 +15,14 @@ void next_larger_element(std::vector<int>& A) {
 
   map<int, int> tree;
   int i;
-  
+
+  // Insert all element in a map whose key is the vector's value and whose value
+  // is its index.
   for (i = 0; i < A.size(); i++) { // O(N)
     tree.insert(pair<int, int>(A[i], i)); // O(lgN)
   }
-  
+
+  // For each element looks its index up and search for the next greater element
   for (int item : A) {
     int result = -1;
     int index = (*tree.find(item)).second; // O(lgN)
