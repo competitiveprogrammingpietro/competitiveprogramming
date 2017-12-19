@@ -10,8 +10,8 @@ using namespace std;
 
 class Pair {
 public:
-  int first, second;
-  Pair(int one, int two):first(one), second(two) { }
+  long long first, second;
+  Pair(long long one, long long two):first(one), second(two) { }
   friend bool operator < (Pair const& a, Pair const& b);
   friend bool operator > (Pair const& a, Pair const& b);
   friend bool operator == (Pair const& a, Pair const& b);
@@ -56,17 +56,18 @@ ostream& operator << (ostream& os, const Pair& obj) {
 
 
 
-Pair find_pair(vector<int>& input, int k) {
+Pair find_pair(vector<int>& input, long long k) {
 
  // Sort input
   sort(input.begin(), input.end());
 
-  unsigned long long x, y, n, count, i;
+  long long x, y, n, count, i;
 
   n = input.size();
   x = (k - 1)/n;
   y = (k - 1)%n;
-
+  cout << "x" <<  x << endl;
+  cout << "y" <<  y << endl;
   if (input[x] != input[x+1]) {
     return Pair(input[x], input[y]);    
   }
@@ -77,7 +78,8 @@ Pair find_pair(vector<int>& input, int k) {
     count++;
     i++;
   }
-    
+
+
   if (y <= count * count)
     return Pair(input[x], input[x]);
 
@@ -121,7 +123,7 @@ Pair find_pair(vector<int>& input, int k) {
 
 int main() {
 
-  int n, k, i, a, count;
+  long long n, k, i, a, count;
   vector<int> input;
   cin >> n >> k;
   for (i = 0; i < n; i++) {
