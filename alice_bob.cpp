@@ -9,7 +9,7 @@
 
 using namespace std;
 
-pair<int, int> chocolet_bars(vector<int>& times) {
+pair<int, int> chocolate_bars(vector<int>& times) {
   int SUM[times.size() + 1], i, alice_i, bob_i, alice_t, bob_t, max_i;
 
   SUM[0] = 0;
@@ -41,7 +41,7 @@ int main() {
     cin >> time;
     times.push_back(time);
   }
-  pair<int, int> result = chocolet_bars(times);
+  pair<int, int> result = chocolate_bars(times);
   cout << result.first << " " << result.second << endl;
   return 0;
 }
