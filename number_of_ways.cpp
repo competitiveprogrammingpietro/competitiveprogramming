@@ -9,41 +9,39 @@
 
 using namespace std;
 
-int ways(vector<int>& input) {
-  int SUM[input.size()], C[input.size()];
-  int i, j, target, max;
-
-  SUM[0] = input[0];
-  for (i = 1; i < input.size(); ++i) {
-    SUM[i] = SUM[i - 1] + input[i];
+int64_t ways(vector<int>& input) {
+  int64_t n, i;
+  int64_t sum, S;
+  int64_t C[input.size()] = { 0 };
+  int64_t result;
+  S = 0;
+  for (i = 0; i < input.size(); ++i) {
+    S += input[i];
+    C[i] = 0;
   }
-  max = SUM[input.size() - 1];
-  
+
   // There is no solution
-  if (max % 3 != 0)
+  if (S % 3 != 0)
     return 0;
-  target = max / 3; // Max divided by three
+  S = S / 3;
 
   // Compute C
-  for (i = 0; i < input.size(); ++i) {
-    int sum, acc;
-    sum = acc = 0;
-    for (j = input.size() - 1; j >= i; --j) {
-      sum += input[j];
-      if (sum == target)
-	acc++;
-    }
-    C[i] = acc;
+  n = input.size();
+  sum = input[n - 1];
+  C[n-1] = (input[n-1] == S) ? 1 : 0;
+  for (i = n - 2; i>=0; i--) {
+    C[i] = C[i + 1];
+    sum += input[i];
+    if (sum == S)
+      C[i] += 1;
   }
-  int result = 0;
-  for (i = 0; i < input.size(); ++i) {
 
-    // No further solutions possible
-    if (i + 2 > input.size() - 1)
-      return result;
-
+  result = sum = 0;
+  for (i = 0; i < input.size() - 2; ++i) {
+    sum += input[i];
+    
     // Not target
-    if (SUM[i] != target)
+    if (sum != S)
       continue;
 
     // Solution found
