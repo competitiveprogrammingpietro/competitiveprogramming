@@ -28,46 +28,50 @@ public:
   void visit(vector<Node>& tree);
 };
 
-void Node::merge(map<int, int> cardinality) {
-  for (auto it = cardinality.begin(); it != cardinality.end(); ++it) {
-    m_colors_cardinality[it->first] += it->second;
+void flatten(Node& root,
+	     vector<Node>& tree,
+	     vector<int>& flat,
+	     vector<int>& E,
+	     vector<int>& U,
+	     int& time) {
+  
+  int index = root.m_index;
+
+  flat[time] = index;
+  E[index - 1] = time;
+  time++;
+  for (auto it = root.m_vertices.begin(); it != root.m_vertices.end(); ++it) {
+    flatten(tree[*it], tree, flat, E, U, time);
   }
-}
-void Node::visit(vector<Node>& tree) {
-  if (m_computed)
-    return;
-  m_computed = true;
-  int& reference = m_colors_cardinality[m_color];
-  reference += 1;
-  for (auto it = m_vertices.begin(); it != m_vertices.end(); ++it) {
-    tree[*it].visit(tree);
-    this->merge(tree[*it].m_colors_cardinality);
-  }
+  flat[time] = index;
+  U[index - 1] = time;
+  time++;
 }
 
-bool vertex_increment(const pair<int, int>& one, const pair<int, int>& two) {
-  return one.first >= two.first;
+void add(vector<int>& colors, Node& node, vector<bool>& found) {
+  if (found[node.m_index - 1])
+    return;
+  colors[node.m_color - 1]++;
+  found[node.m_index - 1] = true;
 }
-ostream&  operator<< (ostream& os, const Node& node) {
-  os << "Color : " << node.m_color << " Links:";
-  for (auto it = node.m_vertices.begin() ; it != node.m_vertices.end(); ++it) {
-    os << '\t' << *it;
-  }
-  os << endl << " Cardinality " << endl;
-  for (auto it = node.m_colors_cardinality.begin(); it != node.m_colors_cardinality.end(); ++it) {
-    os << it->first << " " << it->second << endl;
-  }
-  return os;
+
+void remove(vector<int> colors, Node& node, vector<bool>& found) {
+  if (found[node.m_index - 1])
+    return;
+  colors[node.m_color - 1]--;
+  found[node.m_index - 1] = true;
 }
 
 int main() {
   int nodes, queries;
   vector<Node> tree;
   vector<pair<int,int> > queries_array;
-  int color;
+  int color, time;
   
   cin >> nodes >> queries;
-
+  vector<int> U(nodes), E(nodes), F(nodes * 2);
+  time = 0;
+  
   // Build the tree
   for (int i = 0; i < nodes; i++) {
     cin >> color;
@@ -82,37 +86,68 @@ int main() {
     tree[a - 1].insertEdge(b-1);
     //    tree[b-1].insertEdge(a-1);
   }
-  // for (auto it = tree.begin(); it != tree.end(); ++it) {
-  //   cout << *it << endl;
-  // }
 
-  // Gather queries
+  // Create flat array
+  flatten(tree[0], tree, F, E, U, time);
+
+  
+  for (auto it = F.begin(); it != F.end(); ++it) {
+    cout << *it << ",";
+  }
+  cout << endl;
+
+  for (auto it = E.begin(); it != E.end(); ++it) {
+    cout << *it << ",";
+  }
+  cout << endl;
+
+  for (auto it = U.begin(); it != U.end(); ++it) {
+    cout << *it << ",";
+  }
+  cout << endl;
+  
+  vector<int> colors(nodes, 0);
+  int r, l;
+  r = -1;
+  l = 0;
   for (int i = 0; i < queries; i++) {
     int v, k;
-    cin >> v >> k;
-    queries_array.push_back(pair<int,int>(v, k));
-  }
-
-  // Sort them
-  //  sort (queries_array.begin(), queries_array.end(), vertex_increment); // O (logN)
-  
-  // O(M)
-  for (auto it = queries_array.begin(); it != queries_array.end(); it++) {
-    Node& target = tree[it->first - 1];
-    target.visit(tree);
+    int query_l, query_r;
+    vector<bool> found(nodes, false);
     
-    int result = 0;
+    cin >> v >> k;
+    
+    // Entrata, Uscita
+    query_l = E[v - 1];
+    query_r = U[v - 1];
+    cout << query_l << "," << query_r << endl;
+    while (l < query_l) {
+      cout << "l" << l << endl;
+      remove(colors, tree[F[l]], found);
+      l++;
+    }
+    while (l > query_l) {
+      l--;
+      cout << "l" << l << endl;
+      add(colors, tree[F[l]], found);
+    }
+    while(r < query_r) {
+      r++;
+      cout << "r" << r << endl;
+      add(colors, tree[F[r]], found);
+    }
+    while(r > query_r) {
+      cout << "r" << r << endl;
+      remove(colors, tree[F[r]], found);
+      r--;
+    }
 
-    // O(N) Number of color
-    for (auto inner_it = target.m_colors_cardinality.begin(); inner_it != target.m_colors_cardinality.end(); ++inner_it) {
-      if (inner_it->second >= it->second)
+    // Print out results
+    int result = 0;
+    for (auto it = colors.begin(); it != colors.end(); ++it) {
+      if (*it > k)
 	result++;
     }
     cout << result << endl;
   }
-
-  // for (auto it = tree.begin(); it != tree.end(); ++it) {
-  //   cout << *it << endl;
-  // }
-  
 }
