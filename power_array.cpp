@@ -2,7 +2,7 @@
  * Competive Programming - UniPi.
  * Pietro Paolini - 2017
  * Souce: http://codeforces.com/contest/86/problem/D
- * Complexity: O(mn)
+ * Complexity: O(N * lgN)
  */
 #include <iostream>
 #include <vector>
@@ -10,9 +10,23 @@
 #include <utility>
 #include <algorithm>
 #include <cstring>
+#include <map>
 
 using namespace std;
 
+class query {
+public:
+  int l, r, pos;
+  bool operator< (const query& one) const {
+    if (l == one.l)
+      return r < one.r;
+    else
+      return l < one.l;
+  }
+  bool operator== (const query& one) {
+     return one.l == l && one.r == r;
+  }
+};
 
 int main() {
   int size_array, num_queries;
@@ -26,46 +40,67 @@ int main() {
     input.push_back(item);
   }
 
-  vector<int> counter(size_array + 1, 0);
-  vector<int> result_array;
+  int             counter[1000000] = { 0 };
+  vector<int>     result_array;
+  multiset<query> queries;
+  vector<int>     results(num_queries, 0);
+
+  // Store all queries
+  for (int i = 0; i < num_queries; i++) { // O(N * lgN)
+    query query;
+    cin >> query.l;
+    cin >> query.r;
+    query.pos = i;
+    queries.insert(query);
+  }
+
   int r, l;
   r = -1;
   l = 0;
-  for (int i = 0; i < num_queries; i++) {
+  for (auto it = queries.begin(); it != queries.end(); ++it) { // O(SQRT(N) * N)
     int query_l, query_r;
-    
+
     // Query's boundaries
-    cin >> query_l;
-    cin >> query_r;
+    query_l = it->l;
+    query_r = it->r;
     query_l--;
     query_r--;
     while (l < query_l) {
-      counter[input[l - 1]]--;
+      counter[input[l]]--;
       l++;
     }
     while (l > query_l) {
-      counter[input[l - 1]]++;
+      counter[input[l]]++;
       l--;
     }
     while(r < query_r) {
       r++;
-      counter[input[r - 1]]++;
+      counter[input[r]]++;
     }
     while(r > query_r) {
-      counter[input[r - 1]]--;
+      counter[input[r]]--;
       r--;
     }
-    
-    int result = 0;
-    for (auto it = counter.begin(); it != counter.end(); ++it) {
-      if (*it == 0)
+
+    int64_t result = 0;
+    for (int x = query_l; x <= query_r; x++) {
+      
+      bool copy = false;
+      for (int z = x + 1; z <= query_r; z++) {
+	if (input[z] != input[x])
+	  continue;
+	copy = true;
+	break;
+      }
+
+      if (copy)
 	continue;
-      result += (counter.size() - (counter.end() - it)) * (*it) * (*it);
+      result += input[x] * counter[input[x]] * counter[input[x]];
     }
-    result_array.push_back(result);
+    results[it->pos] = result;
   }
 
-  for (auto it = result_array.begin(); it != result_array.end(); ++it) {
+  for (auto it = results.begin(); it != results.end(); ++it) { // O(Q) Q = queries
     cout << *it << endl;
   }
   return 0;
