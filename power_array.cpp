@@ -64,26 +64,21 @@ int main() {
     // Query's boundaries
     query_l = it->l;
     query_r = it->r;
-    //    cout << query_l << " " << query_r << endl;
     query_l--;
     query_r--;
     while (l < query_l) {
-      //      cout << "Step" << endl;
       counter[input[l]]--;
       l++;
     }
     while (l > query_l) {
-      //      cout << "Step" << endl;
       counter[input[l]]++;
       l--;
     }
     while(r < query_r) {
-      //      cout << "Step" << endl;
       r++;
       counter[input[r]]++;
     }
     while(r > query_r) {
-      //      cout << "Step" << endl;
       counter[input[r]]--;
       r--;
     }
