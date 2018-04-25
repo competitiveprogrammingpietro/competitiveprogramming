@@ -29,6 +29,7 @@ public:
 };
 
 int main() {
+  std::ios_base::sync_with_stdio(false);
   int size_array, num_queries;
   vector<int> input;
 
@@ -40,13 +41,13 @@ int main() {
     input.push_back(item);
   }
 
-  int             counter[1000000] = { 0 };
+  int64_t         counter[1000000] = { 0 };
   vector<int>     result_array;
   multiset<query> queries;
-  vector<int>     results(num_queries, 0);
+  vector<int64_t> results(num_queries, 0);
 
   // Store all queries
-  for (int i = 0; i < num_queries; i++) { // O(N * lgN)
+  for (int i = 0; i < num_queries; i++) { // O(Q * lgQ)
     query query;
     cin >> query.l;
     cin >> query.r;
@@ -63,39 +64,33 @@ int main() {
     // Query's boundaries
     query_l = it->l;
     query_r = it->r;
+    //    cout << query_l << " " << query_r << endl;
     query_l--;
     query_r--;
     while (l < query_l) {
+      //      cout << "Step" << endl;
       counter[input[l]]--;
       l++;
     }
     while (l > query_l) {
+      //      cout << "Step" << endl;
       counter[input[l]]++;
       l--;
     }
     while(r < query_r) {
+      //      cout << "Step" << endl;
       r++;
       counter[input[r]]++;
     }
     while(r > query_r) {
+      //      cout << "Step" << endl;
       counter[input[r]]--;
       r--;
     }
 
     int64_t result = 0;
     for (int x = query_l; x <= query_r; x++) {
-      
-      bool copy = false;
-      for (int z = x + 1; z <= query_r; z++) {
-	if (input[z] != input[x])
-	  continue;
-	copy = true;
-	break;
-      }
-
-      if (copy)
-	continue;
-      result += input[x] * counter[input[x]] * counter[input[x]];
+      result += input[x] * counter[input[x]] ;//* counter[input[x]];
     }
     results[it->pos] = result;
   }
