@@ -2,7 +2,7 @@
  * Competive Programming - UniPi.
  * Pietro Paolini - 2017
  * Souce: http://codeforces.com/contest/86/problem/D
- * Complexity: O(N * lgN)
+ * Complexity: O(SQRT(N) * N)
  */
 #include <iostream>
 #include <vector>
@@ -11,87 +11,102 @@
 #include <algorithm>
 #include <cstring>
 #include <map>
-
+#include <cmath>
 using namespace std;
 
 class query {
 public:
   int l, r, pos;
-  bool operator< (const query& one) const {
-    if (l == one.l)
-      return r < one.r;
-    else
-      return l < one.l;
-  }
   bool operator== (const query& one) {
      return one.l == l && one.r == r;
   }
+  friend ostream& operator<<(ostream& os, const query& one);
 };
+
+ostream& operator<<(ostream& os, const query& one) {
+  os << "{" << one.l << "," << one.r << "}";
+  return os;
+}
+
+bool right_order(const query& one, const query& two) {
+  return one.r < two.r;
+}
 
 int main() {
   std::ios_base::sync_with_stdio(false);
-  int size_array, num_queries;
-  vector<int> input;
-
+  int                    size_array, num_queries, bucket_size, bucket_number;
+  vector<int>            input;
+  int64_t                counter[1000000] = { 0 };
+  vector<vector<query> > buckets;;
+  vector<int64_t>        results;
+  
   cin >> size_array >> num_queries;
+
   input.reserve(size_array);
+  results.reserve(num_queries);
+  bucket_size = round((float) (size_array / sqrt(size_array)));
+  bucket_number = ceil((float) (size_array / sqrt(size_array)));
+  buckets.reserve(bucket_number);
+  results.reserve(num_queries);
+
+  for (int i = 0; i < bucket_number; i++) {
+    buckets.push_back(vector<query>());
+  }
+  
   for (int i = 0; i < size_array; i++) {
     int item;
     cin >> item;
     input.push_back(item);
   }
 
-  int64_t         counter[1000000] = { 0 };
-  vector<int>     result_array;
-  multiset<query> queries;
-  vector<int64_t> results(num_queries, 0);
-
-  // Store all queries
+  // Store all queries in the buckets
   for (int i = 0; i < num_queries; i++) { // O(Q * lgQ)
     query query;
+    int bucket;
     cin >> query.l;
     cin >> query.r;
     query.pos = i;
-    queries.insert(query);
+    bucket = (query.l - 1) / bucket_size;
+    buckets[bucket].push_back(query);
   }
 
   int r, l;
   r = -1;
   l = 0;
-  for (auto it = queries.begin(); it != queries.end(); ++it) { // O(SQRT(N) * N)
-    int query_l, query_r;
+  for (auto bucket = buckets.begin(); bucket != buckets.end(); ++bucket) { // O(SQRT(N) * N)
+    sort (bucket->begin(), bucket->end(), right_order);                    // O(SQRT(N)* LG(SQRT(N)))
+    for (auto query_item = bucket->begin(); query_item != bucket->end(); ++query_item) {
+      int query_l, query_r;
 
-    // Query's boundaries
-    query_l = it->l;
-    query_r = it->r;
-    query_l--;
-    query_r--;
-    while (l < query_l) {
-      counter[input[l]]--;
-      l++;
-    }
-    while (l > query_l) {
-      counter[input[l]]++;
-      l--;
-    }
-    while(r < query_r) {
-      r++;
-      counter[input[r]]++;
-    }
-    while(r > query_r) {
-      counter[input[r]]--;
-      r--;
-    }
+      // Query's boundaries
+      query_l = query_item->l - 1;
+      query_r = query_item->r - 1;
+      while (l < query_l) {
+	counter[input[l]]--;
+	l++;
+      }
+      while (l > query_l) {
+	l--;
+	counter[input[l]]++;
+      }
+      while(r < query_r) {
+	r++;
+	counter[input[r]]++;
+      }
+      while(r > query_r) {
+	counter[input[r]]--;
+	r--;
+      }
 
-    int64_t result = 0;
-    for (int x = query_l; x <= query_r; x++) {
-      result += input[x] * counter[input[x]] ;//* counter[input[x]];
+      int64_t result = 0;
+      for (int x = query_l; x <= query_r; x++) {
+      	result += input[x] * counter[input[x]] ;
+      }
+      results[query_item->pos] = result;
     }
-    results[it->pos] = result;
   }
-
-  for (auto it = results.begin(); it != results.end(); ++it) { // O(Q) Q = queries
-    cout << *it << endl;
+  for (auto i = 0; i < num_queries; ++i) { // O(Q) Q = queries
+    cout << results[i] << endl;
   }
   return 0;
 }
