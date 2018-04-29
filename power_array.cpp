@@ -36,7 +36,7 @@ int main() {
   std::ios_base::sync_with_stdio(false);
   int                    size_array, num_queries, bucket_size, bucket_number;
   vector<int>            input;
-  int64_t                counter[1000000] = { 0 };
+  int64_t                counter[1000000 + 1] = { 0 };
   vector<vector<query> > buckets;;
   vector<int64_t>        results;
   
@@ -71,36 +71,37 @@ int main() {
   }
 
   int r, l;
+  int64_t result;
   r = -1;
   l = 0;
+  result = 0;
   for (auto bucket = buckets.begin(); bucket != buckets.end(); ++bucket) { // O(SQRT(N) * N)
     sort (bucket->begin(), bucket->end(), right_order);                    // O(SQRT(N)* LG(SQRT(N)))
     for (auto query_item = bucket->begin(); query_item != bucket->end(); ++query_item) {
       int query_l, query_r;
-
+      
       // Query's boundaries
       query_l = query_item->l - 1;
       query_r = query_item->r - 1;
       while (l < query_l) {
 	counter[input[l]]--;
+	result += input[l] * (1 - ((counter[input[l]] + 1) << 1));
 	l++;
       }
       while (l > query_l) {
 	l--;
 	counter[input[l]]++;
+	result += input[l] * ((counter[input[l]] << 1) - 1);
       }
       while(r < query_r) {
 	r++;
 	counter[input[r]]++;
+	result += input[r] * ((counter[input[r]] << 1) - 1);
       }
       while(r > query_r) {
 	counter[input[r]]--;
+	result += input[r] * (1 - ((counter[input[r]] + 1) << 1));
 	r--;
-      }
-
-      int64_t result = 0;
-      for (int x = query_l; x <= query_r; x++) {
-      	result += input[x] * counter[input[x]] ;
       }
       results[query_item->pos] = result;
     }
