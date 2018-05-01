@@ -34,6 +34,7 @@ bool right_order(const query& one, const query& two) {
 
 int main() {
   std::ios_base::sync_with_stdio(false);
+  cin.tie(0);
   int                    size_array, num_queries, bucket_size, bucket_number;
   vector<int>            input;
   int64_t                counter[1000000 + 1] = { 0 };
@@ -85,22 +86,22 @@ int main() {
       query_r = query_item->r - 1;
       while (l < query_l) {
 	counter[input[l]]--;
-	result += input[l] * (1 - ((counter[input[l]] + 1) << 1));
+	result -= 2 * input[l] * counter[input[l]] + input[l];
 	l++;
       }
       while (l > query_l) {
 	l--;
+	result += 2 * input[l] * counter[input[l]] + input[l];
 	counter[input[l]]++;
-	result += input[l] * ((counter[input[l]] << 1) - 1);
       }
       while(r < query_r) {
 	r++;
+	result += 2 * input[r] * counter[input[r]] + input[r];
 	counter[input[r]]++;
-	result += input[r] * ((counter[input[r]] << 1) - 1);
       }
       while(r > query_r) {
 	counter[input[r]]--;
-	result += input[r] * (1 - ((counter[input[r]] + 1) << 1));
+	result -= 2 * input[r] * counter[input[r]] + input[r];
 	r--;
       }
       results[query_item->pos] = result;
