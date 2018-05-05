@@ -52,13 +52,15 @@ void flatten(Node& root,
 	     vector<int>& E,
 	     vector<int>& U,
 	     int& time) {
-  
   int index = root.m_index;
+  //  cout << "Flatten() " << index << endl;
+     
   
   flat[time] = index - 1;
   E[index - 1] = time;
   time++;
   for (auto it = root.m_vertices.begin(); it != root.m_vertices.end(); ++it) {
+    if (E[tree[*it].m_index - 1] == -1)
       flatten(tree[*it], tree, flat, E, U, time);
   }
   flat[time] = index - 1;
@@ -69,8 +71,10 @@ void flatten(Node& root,
 void add(vector<int>& colors,
 	 Node& node,
 	 vector<bool>& found) {
+  //  cout << "Add() " << node.m_color << endl;
   if (found[node.m_index - 1])
     return;
+  //  cout << "Add()1 " << node.m_color << endl;
   colors[node.m_color - 1]++;
   found[node.m_index - 1] = true;
 }
@@ -78,10 +82,10 @@ void add(vector<int>& colors,
 void remove(vector<int>& colors,
 	    Node& node,
 	    vector<bool>& found) {
-  //cout << "remove()" << node.m_index << endl;
-
+  //  cout << "Remove() " << node.m_color << endl;
   if (found[node.m_index - 1])
     return;
+  //  cout << "Remove1() " << node.m_color << endl;
   colors[node.m_color - 1]--;
   found[node.m_index - 1] = true;
 }
@@ -91,7 +95,7 @@ int main() {
   vector<Node> tree;
 
   cin >> nodes >> queries;
-  vector<int>     U(nodes), E(nodes), F(nodes * 2);
+  vector<int>     U(nodes, -1), E(nodes, -1), F(nodes * 2, -1);
   vector<query>   queries_vector(queries);
   vector<int64_t> results(queries, 0);
   time = 0;
@@ -109,13 +113,14 @@ int main() {
     int a, b;
     cin >> a >> b;
     tree[a - 1].insertEdge(b - 1);
+    tree[b - 1].insertEdge(a - 1);
   }
 
   // Create flat array
   flatten(tree[0], tree, F, E, U, time);
 #ifdef DEBUG  
   for (auto it = F.begin(); it != F.end(); ++it) {
-    cout << *it << ",";
+    cout << *it + 1 << ",";
   }
   cout << endl;
   for (auto it = E.begin(); it != E.end(); ++it) {
@@ -146,29 +151,32 @@ int main() {
   int r, l;
   r = -1;
   l = 0;
-  for (auto query_item = queries_vector.begin(); query_item <= queries_vector.end(); ++query_item) {
+  for (auto query_item = queries_vector.begin();
+       query_item != queries_vector.end();
+       ++query_item) {
 
       int query_l, query_r, k;
-      vector<bool> found(nodes, false);
+      vector<bool> foundl(nodes, false);
+      vector<bool> foundr(nodes, false);
     
       // Entrata, Uscita
       query_l = query_item->l;
       query_r = query_item->r;
       k = query_item->count;
       while (l < query_l) {
-	remove(colors, tree[F[l]], found);
+	remove(colors, tree[F[l]], foundl);
 	l++;
       }
       while (l > query_l) {
 	l--;
-	add(colors, tree[F[l]], found);
+	add(colors, tree[F[l]], foundl);
       }
       while(r < query_r) {
       r++;
-      add(colors, tree[F[r]], found);
+      add(colors, tree[F[r]], foundr);
       }
       while(r > query_r) {
-	remove(colors, tree[F[r]], found);
+	remove(colors, tree[F[r]], foundr);
 	r--;
       }
 
