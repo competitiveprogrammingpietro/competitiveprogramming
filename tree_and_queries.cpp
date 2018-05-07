@@ -5,16 +5,11 @@
  */
 #include <iostream>
 #include <vector>
-#include <set>
 #include <utility>
 #include <algorithm>
 #include <cstring>
-#include <map>
 #include <cmath>
-#include <climits>
-#include <cstdio>
-#define READ_INT(var) scanf("%d", &var)
-#define MAX_NODES ((int)1E5 + 10)
+#define MAX_NODES (100000 + 10)
 using namespace std;
 
 int bucket_size;
@@ -74,13 +69,27 @@ void flatten(int node_index,
 }
 
 void add(int index) {
-  int color = tree[index].m_color;
+#ifdef DEBUG
+  cout << "add("
+       << index
+       << "):"
+       << F[index]
+       << endl;
+#endif  
+  int color = F[index];
   color_counter[color]++;
   k_counters[color_counter[color]]++;
 }
 
 void remove(int index) {
-  int color = tree[index].m_color;
+#ifdef DEBUG
+    cout << "remove("
+       << index
+       << "):"
+       << F[index]
+       << endl;
+#endif  
+  int color = F[index];
   k_counters[color_counter[color]]--;
   color_counter[color]--;
 }
@@ -98,6 +107,7 @@ int main() {
   for (int i = 0; i < nodes; i++) {
     cin >> color;
     tree[i].m_color = color;
+    tree[i].m_vertices.clear();
   }
 
   // Insert edges
