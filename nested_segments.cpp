@@ -79,28 +79,41 @@ bool segment_sort(mapping one, mapping two) {
 
 
 int main() {
-  int                    i, size, max;
+  int                    i, size;
   vector<mapping>        sorted;
   pair<int64_t, int64_t> item;
+  vector<int64_t>        all;
   
   cin >> size;
 
-  max = 0;
+  all.reserve(size);
   for (i = 0; i < size; i++) { // N
-    cin >> item.first >> item.second;
-    max = (item.second > max ) ? item.second : max;
+    int64_t a, b;
+    
+    cin >> a >> b;
+    item.first = a;
+    item.second = b;
+    all.push_back(b);
     sorted.push_back(mapping(i, item));
   }
   
   vector<int>           results(size, 0);
-  fenwick_tree<int64_t> ftree(max + 1);
+  fenwick_tree<int64_t> ftree(size + 1);
 
   sort(sorted.begin(), sorted.end(), segment_sort); // lgN
+  sort(all.begin(), all.end());                     // lgN
 
   // Populate the BIT tree
   for (auto it = sorted.begin(); it != sorted.end(); ++it) {
-    ftree.add(it->coordinates.second, 1);
-    results[it->index] = ftree.sum(it->coordinates.second - 1);
+    int i;
+
+    // Look up for the mapping for the right coordinate
+    for (i = 0; i < size; i++) {
+      if (all[i] == it->coordinates.second)
+	break;
+    }
+    ftree.add(i, 1);
+    results[it->index] = ftree.sum(i - 1);       // lgN
   }
 
   for (auto it = results.begin(); it != results.end(); ++it) {
