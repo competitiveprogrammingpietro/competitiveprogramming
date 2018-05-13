@@ -71,10 +71,20 @@ struct mapping {
   int index;
   pair<int64_t, int64_t> coordinates;
   mapping(int index, pair<int64_t, int64_t> elem): index(index), coordinates(elem) { }
+  friend ostream& operator <<(ostream& out, const mapping& one);
 };
+
+ostream& operator <<(ostream& out, mapping& one) {
+  out << "{" << one.coordinates.first << "," << one.coordinates.second << "}";
+  return out;
+}
 
 bool segment_sort(mapping one, mapping two) {
   return one.coordinates.first > two.coordinates.first;
+}
+
+bool right_sort(mapping one, mapping two) {
+  return one.coordinates.second < two.coordinates.second;
 }
 
 
@@ -86,34 +96,41 @@ int main() {
   
   cin >> size;
 
-  all.reserve(size);
+  all.reserve(size * 2);
   for (i = 0; i < size; i++) { // N
     int64_t a, b;
     
     cin >> a >> b;
     item.first = a;
     item.second = b;
+    all.push_back(a);
     all.push_back(b);
     sorted.push_back(mapping(i, item));
   }
   
   vector<int>           results(size, 0);
-  fenwick_tree<int64_t> ftree(size + 1);
+  fenwick_tree<int64_t> ftree((size * 2) + 1, 0);
+
+
+  sort(all.begin(), all.end());
+  
+  for (auto it = sorted.begin(); it != sorted.end(); ++it) { // lgN
+#ifdef DEBUG    
+    cout  << (int64_t) (lower_bound(all.begin(), all.end(), it->coordinates.first) - all.begin()) << ", " << (int64_t) (lower_bound(all.begin(), all.end(), it->coordinates.second) - all.begin()) << endl;
+#endif    
+    it->coordinates.first = (int64_t) (lower_bound(all.begin(), all.end(), it->coordinates.first) - all.begin());
+    it->coordinates.second = (int64_t) (lower_bound(all.begin(), all.end(), it->coordinates.second) - all.begin());
+  }
 
   sort(sorted.begin(), sorted.end(), segment_sort); // lgN
-  sort(all.begin(), all.end());                     // lgN
-
+    
   // Populate the BIT tree
   for (auto it = sorted.begin(); it != sorted.end(); ++it) {
-    int i;
-
-    // Look up for the mapping for the right coordinate
-    for (i = 0; i < size; i++) {
-      if (all[i] == it->coordinates.second)
-	break;
-    }
-    ftree.add(i, 1);
-    results[it->index] = ftree.sum(i - 1);       // lgN
+#ifdef DEBUG    
+        cout << *it << endl;
+#endif	
+    ftree.add(it->coordinates.second, 1);
+    results[it->index] = ftree.sum(it->coordinates.second - 1);       // lgN
   }
 
   for (auto it = results.begin(); it != results.end(); ++it) {
