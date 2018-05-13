@@ -15,7 +15,7 @@ using namespace std;
 /* 
   Code from https://github.com/spaghetti-source/algorithm/blob/master/data_structure/fenwick_tree.cc
  */
-
+ 
 #include <vector>
 
 template <class T>
@@ -69,21 +69,18 @@ struct fenwick_tree {
 
 struct mapping {
   int index;
-  pair<int64_t, int64_t> item;
-  mapping(int index, pair<int64_t, int64_t> elem): index(index), item(elem) { }
+  pair<int64_t, int64_t> coordinates;
+  mapping(int index, pair<int64_t, int64_t> elem): index(index), coordinates(elem) { }
 };
 
 bool segment_sort(mapping one, mapping two) {
-  return one.item.first > two.item.first;
+  return one.coordinates.first > two.coordinates.first;
 }
 
-bool index_sort(mapping one, mapping two) {
-  return one.index < two.index;
-}
 
 int main() {
-  int i, size, max;
-  vector<mapping> sorted;
+  int                    i, size, max;
+  vector<mapping>        sorted;
   pair<int64_t, int64_t> item;
   
   cin >> size;
@@ -95,25 +92,19 @@ int main() {
     sorted.push_back(mapping(i, item));
   }
   
-  // Cough cough ... test wants input to be consumed
-  if (size == 1) {
-    cout << 0 << endl;
-    return 0;
-  }
-
-  fenwick_tree<int64_t> ftree(max + 1, 0);
-  vector<int> results(size, 0);
+  vector<int>           results(size, 0);
+  fenwick_tree<int64_t> ftree(max + 1);
 
   sort(sorted.begin(), sorted.end(), segment_sort); // lgN
 
   // Populate the BIT tree
   for (auto it = sorted.begin(); it != sorted.end(); ++it) {
-    ftree.add(it->item.second, 1);
-    results[it->index] = ftree.sum(it->item.second);
+    ftree.add(it->coordinates.second, 1);
+    results[it->index] = ftree.sum(it->coordinates.second - 1);
   }
 
   for (auto it = results.begin(); it != results.end(); ++it) {
-    cout << *it - 1 << endl; // Why minus one needed ?
+    cout << *it << endl; 
   }
   return 0;
 }
