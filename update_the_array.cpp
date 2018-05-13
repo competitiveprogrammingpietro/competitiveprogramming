@@ -1,18 +1,18 @@
 /*
  * Competive Programming - UniPi.
- * Pietro Paolini - 2017
  * Complexity : O(NlgN)
  * Source: http://www.spoj.com/submit/INVCNT/
  */
 #include <iostream>
 #include <vector>
-#pragma once
 
+#pragma once
 /* 
   Code from https://github.com/spaghetti-source/algorithm/blob/master/data_structure/fenwick_tree.cc
  */
 
 #include <vector>
+
 
 template <class T>
 struct fenwick_tree {
@@ -71,15 +71,14 @@ int main() {
   std::ios_base::sync_with_stdio(false);
   cin >> tests;
 
-  for (int i = 0; i < tests; i++) { 
-    cin >> size >> updates;
-    fenwick_tree<int64_t> tree(size + 1);
+  for (int i = 0; i < tests; i++) {
+    scanf("%d %d", &size, &updates);
+    fenwick_tree<int64_t> tree(size + 1, 0);
 
     // Build the tree
     for (int j = 0; j < updates; j++) {
       int l, r, v;
       scanf("%u%d%d", &l, &r, &v);
-      cin >> l >> r >> v;
       tree.add(l, v);
       tree.add(r + 1, -1 * v);
     }
@@ -87,10 +86,10 @@ int main() {
     // Get and answer queries
     int queries;
     scanf("%d", &queries);
-    for (int j = 0; i < queries; i++) {
+    for (int i = 0; i < queries; i++) {
       int index;
       scanf("%d", &index);
-      cout << tree.sum(index) << endl;
+      printf("%I64d\n", tree.sum(index));
     }
   }  
 
