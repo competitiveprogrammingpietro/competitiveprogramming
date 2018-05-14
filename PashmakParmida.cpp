@@ -1,6 +1,5 @@
 /*
  * Competive Programming - UniPi.
- * Pietro Paolini - 2017
  * Complexity : O(NlgN)
  * Source: http://codeforces.com/problemset/problem/459/D?locale=en
  */
@@ -68,60 +67,80 @@ using namespace std;
 
 int main() {
   int size, i;
-  vector<int> input;
+  vector<int> input, map;
 
   cin >> size;
   input.reserve(size);
+  map.reserve(size);
   for (i = 0; i < size; i++) {
     int item;
     cin >> item;
     input.push_back(item);
+    map.push_back(item);
   }
 
   // Sort the array
-  sort(input.begin(), input.end());
-  // for (auto it = input.begin(); it != input.end(); ++it) {
-  //   cout << *it << ",";
-  // }
-  // cout << endl;
+  sort(map.begin(), map.end());
 
-  // Compute the rank
-  int rank = 1;
-  i = 0;
-  vector<int> mapped(size, 0);
-  for (auto it = input.begin(); it != input.end() - 1; ++it, ++i) {
-    mapped[i] = rank;
-    if (*it != *(it + 1))
-      rank++;
+  for (auto it = map.begin(); it != map.end(); ++it) {
+    cout << *it << ",";
   }
-  mapped[size -1] = rank;
+  cout << endl;
+
+  // Strip off duplicates and resize
+  map.resize(distance(map.begin(),  unique(map.begin(), map.end())));
+
+  for (auto &elem : input) {
+    elem = distance(map.begin(), lower_bound(map.begin(), map.end(), elem));
+    cout << elem << endl;
+  }
   
-  // for (auto it = mapped.begin(); it != mapped.end(); ++it) {
-  //   cout << *it << ",";
-  // }
-  // cout << endl;
-  
+  for (auto it = input.begin(); it != input.end(); ++it) {
+    cout << *it << ",";
+  }
+  cout << endl;
+
+
   // Compute the suffix and BIT
   fenwick_tree<int> tree(size);
-  vector<int> suffix(size, 0), counters(size, 0);
+  vector<int> suffix(size, 0), counters(size, 0), prefix(size, 0);
   for (i = size - 1; i >= 0; --i) {
-    counters[mapped[i]]++;
-    suffix[i] = counters[mapped[i]];
+    counters[input[i]]++;
+    suffix[i] = counters[input[i]];
     tree.add(suffix[i], 1);
   }
-  
-  // for (auto it = suffix.begin(); it != suffix.end(); ++it) {
-  //   cout << *it << ",";
-  // }
+
+  fill(counters.begin(), counters.end(), 0);
+  for (i = 0; i < size; i++) {
+    counters[input[i]]++;
+    prefix[i] = counters[input[i]];
+  }
+
+  for (int j = 0; j < size; j++) {
+    cout << prefix[j] << ",";
+  }
+  cout << endl;
+    
+  for (int j = 0 ; j < size; j++) {
+    cout << suffix[j] << ",";
+  }
+  cout << endl;
+
+
   // cout << endl;
   //TODO: da rivedere
   fill(counters.begin(), counters.end(), 0);
   int result = 0;
   for (int i = 0; i < size; ++i) {
-    tree.add(suffix[i], -1);
-    counters[mapped[i]]++;
-    result += tree.sum(counters[mapped[i]] - 1);
+    int first_interval, second_interval;
+    
+    first_interval = prefix[i];
+    cout << "first interval " << first_interval << endl;
+    tree.add(prefix[i], -1); 
+    second_interval = first_interval - 1 > 0 ? tree.sum(first_interval - 1) : 0;
+    cout << "second interval " << second_interval << endl;
+    tree.add(prefix[i], 1); 
+    result += second_interval;
   }
   cout << result << endl;
-  
 }
