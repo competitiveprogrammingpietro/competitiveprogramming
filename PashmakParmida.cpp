@@ -136,10 +136,10 @@ int main() {
     
     first_interval = prefix[i];
     cout << "first interval " << first_interval << endl;
-    tree.add(prefix[i], -1); 
+    tree.add(suffix[i], -1); 
     second_interval = first_interval - 1 > 0 ? tree.sum(first_interval - 1) : 0;
     cout << "second interval " << second_interval << endl;
-    tree.add(prefix[i], 1); 
+    //tree.add(suffix[i], 1); 
     result += second_interval;
   }
   cout << result << endl;
