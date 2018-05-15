@@ -66,14 +66,16 @@ using namespace std;
 
 
 int main() {
-  int size, i;
-  vector<int> input, map;
+  int64_t size, i;
+  vector<int64_t> input, map;
 
+  size = 0;
   cin >> size;
+  
   input.reserve(size);
   map.reserve(size);
   for (i = 0; i < size; i++) {
-    int item;
+    int64_t item;
     cin >> item;
     input.push_back(item);
     map.push_back(item);
@@ -82,65 +84,66 @@ int main() {
   // Sort the array
   sort(map.begin(), map.end());
 
-  for (auto it = map.begin(); it != map.end(); ++it) {
-    cout << *it << ",";
-  }
-  cout << endl;
+  // for (auto it = map.begin(); it != map.end(); ++it) {
+  //   cout << *it << ",";
+  // }
+  // cout << endl;
 
-  // Strip off duplicates and resize
+  // strip off duplicates and resize
   map.resize(distance(map.begin(),  unique(map.begin(), map.end())));
 
   for (auto &elem : input) {
     elem = distance(map.begin(), lower_bound(map.begin(), map.end(), elem));
-    cout << elem << endl;
+    // cout << elem << endl;
   }
   
-  for (auto it = input.begin(); it != input.end(); ++it) {
-    cout << *it << ",";
-  }
-  cout << endl;
+  // for (auto it = input.begin(); it != input.end(); ++it) {
+  //   cout << *it << ",";
+  // }
+  // cout << endl;
 
 
   // Compute the suffix and BIT
-  fenwick_tree<int> tree(size);
-  vector<int> suffix(size, 0), counters(size, 0), prefix(size, 0);
+  fenwick_tree<int64_t> tree(size);
+  vector<int64_t> suffix(size, 0), counters(size + 1, 0), prefix(size, 0);
+
   for (i = size - 1; i >= 0; --i) {
     counters[input[i]]++;
     suffix[i] = counters[input[i]];
     tree.add(suffix[i], 1);
   }
-
+  
   fill(counters.begin(), counters.end(), 0);
   for (i = 0; i < size; i++) {
     counters[input[i]]++;
     prefix[i] = counters[input[i]];
   }
 
-  for (int j = 0; j < size; j++) {
-    cout << prefix[j] << ",";
-  }
-  cout << endl;
+  // for (int j = 0; j < size; j++) {
+  //   cout << prefix[j] << ",";
+  // }
+  // cout << endl;
     
-  for (int j = 0 ; j < size; j++) {
-    cout << suffix[j] << ",";
-  }
-  cout << endl;
+  // for (int j = 0 ; j < size; j++) {
+  //   cout << suffix[j] << ",";
+  // }
+  // cout << endl;
 
 
   // cout << endl;
-  //TODO: da rivedere
   fill(counters.begin(), counters.end(), 0);
-  int result = 0;
+  int64_t result = 0;
   for (int i = 0; i < size; ++i) {
-    int first_interval, second_interval;
+    int64_t first_interval, second_interval;
     
     first_interval = prefix[i];
-    cout << "first interval " << first_interval << endl;
+    // cout << "first interval " << first_interval << endl; 
     tree.add(suffix[i], -1); 
     second_interval = first_interval - 1 > 0 ? tree.sum(first_interval - 1) : 0;
-    cout << "second interval " << second_interval << endl;
+    // cout << "second interval " << second_interval << endl;
     //tree.add(suffix[i], 1); 
     result += second_interval;
   }
-  cout << result << endl;
+  printf("%I64d\n", result);
+  return 0;
 }
