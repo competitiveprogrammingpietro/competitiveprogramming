@@ -1,4 +1,4 @@
-/* Pietro Paolini
+/* 
  * Competitive programming Universita' degli studi di Pisa.
  * Source http://codeforces.com/problemset/problem/6/C?locale=en
  * Complexity O(n)

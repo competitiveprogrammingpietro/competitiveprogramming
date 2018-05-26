@@ -5,36 +5,35 @@
 /*
  * Competive Programming - UniPi.
  * Pietro Paolini - 2017
- * Complexity : ??
+ * Complexity : n
  * Source: https://practice.geeksforgeeks.org/problems/check-for-bst/
  */
-int check_preorder(std::vector<int> const& visit) {
 
-    int root = INT_MIN;
-    std::stack<int> s;
+using namespace std;
+int check_preorder(std::vector<int>& input) {
+  int root = INT_MIN;
 
-    for (auto current: visit) {
+  stack<int> Q;
 
-        // we maintain the invariant
-        // of being in a right subtree
-        if (current < root) return 0;
+  for (auto it = input.begin(); it != input.end(); ++it) {
 
-        while (!s.empty()) { // find next greater
-            if (current < s.top()) {
-                s.pop();
-            } else {
-                root = s.top();
-                break;
-            }
-        }
+    if (*it < root)
+      return 0;
 
-        // now current is next greater of root,
-        // therefore we are in a right subtree
-        s.push(current);
+    while (!Q.empty()) {
+      if (Q.top() > *it) {
+	Q.pop();
+      } else {
+	root = Q.top();
+	break;
+      }
     }
-
-    return 1;
+    Q.push(*it);
+	  
+  }
+  return 1;
 }
+
 
 int main() {
     std::ios_base::sync_with_stdio(false);

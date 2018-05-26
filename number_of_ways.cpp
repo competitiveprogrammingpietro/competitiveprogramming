@@ -1,4 +1,4 @@
-/* Pietro Paolini
+/* 
  * Competitive programming Universita' degli studi di Pisa.
  * Complexity: O(n^2)
  * Source: http://codeforces.com/problemset/problem/160
