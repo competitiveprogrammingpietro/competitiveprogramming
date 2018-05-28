@@ -7,11 +7,12 @@
 using namespace std;
 
 int G[MATRIX_SIZE][MATRIX_SIZE] = { {0} };
+int PRESENT[MATRIX_SIZE] = { 0 };
 
 // Topological sort (ish)
 void topological_sort(int node, int * VISITED, list<int>& order) {
 
-  if (VISITED[node])
+  if (VISITED[node] || PRESENT[node])
     return;
 
   VISITED[node] = 1;
@@ -59,9 +60,9 @@ int test() {
     
     int min_length = a.length() > b.length() ? a.length() : b.length();
     for (int j = 0; j < min_length; j++) {
-      cout << a[j] << "," << b[j] << endl;
       if (a[j] != b[j]) {
 	G[a[j] - 'a'][b[j] - 'a'] = 1;
+	PRESENT[a[j] - 'a'] = PRESENT[b[j] - 'a'] = 1;
 	break;
       }
     }
