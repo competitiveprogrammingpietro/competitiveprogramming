@@ -11,12 +11,14 @@ int PRESENT[MATRIX_SIZE] = { 0 };
 
 // Topological sort (ish)
 void topological_sort(int node, int * VISITED, list<int>& order) {
-
-  if (VISITED[node] || PRESENT[node])
+  //cout << "Topological " << (char) ('a' + node) << endl;
+  if (!PRESENT[node])
+    return;
+  
+  if (VISITED[node])
     return;
 
   VISITED[node] = 1;
-  order.push_back(node);
   
   // Add children
   for (int j = 0; j < MATRIX_SIZE; j++) {
@@ -24,7 +26,7 @@ void topological_sort(int node, int * VISITED, list<int>& order) {
       topological_sort(j, VISITED, order);
     }
   }
-
+  order.push_front(node);
 }
 
 
@@ -58,7 +60,7 @@ int test() {
   for (int i = 0; i < n-1; i++) {
     cin >> b;
     
-    int min_length = a.length() > b.length() ? a.length() : b.length();
+    int min_length = a.length() < b.length() ? a.length() : b.length();
     for (int j = 0; j < min_length; j++) {
       if (a[j] != b[j]) {
 	G[a[j] - 'a'][b[j] - 'a'] = 1;
@@ -67,22 +69,23 @@ int test() {
       }
     }
     a = b;
+    
   }
 
-  char * alphabet = ALPHABET;
-  cout << "   ";
-  for (int i = 0; i < MATRIX_SIZE; i++) {
-    cout << (alphabet[i]);
-  }
-  cout << endl;
+  // char * alphabet = ALPHABET;
+  // cout << "   ";
+  // for (int i = 0; i < MATRIX_SIZE; i++) {
+  //   cout << (alphabet[i]);
+  // }
+  // cout << endl;
   
-  for (int i = 0; i < MATRIX_SIZE; i++) {
-    cout << "[" << (char) (i + 'a') << "]";
-    for (int j = 0; j < MATRIX_SIZE; j++) {
-      cout << G[i][j];
-    }
-    cout << endl;
-  }
+  // for (int i = 0; i < MATRIX_SIZE; i++) {
+  //   cout << "[" << (char) (i + 'a') << "]";
+  //   for (int j = 0; j < MATRIX_SIZE; j++) {
+  //     cout << G[i][j];
+  //   }
+  //   cout << endl;
+  // }
 
   for (int i = 0; i < MATRIX_SIZE; i++) {
     int visited[MATRIX_SIZE] = { 0 };
@@ -97,12 +100,25 @@ int test() {
   list<int> order;
   int visited[MATRIX_SIZE] = { 0 };
   for (int i = 0; i < MATRIX_SIZE; i++) {
-    topological_sort(i, visited, order);
+    if (PRESENT[i])
+      topological_sort(i, visited, order);
+  }
+
+  for (int i = 0; i < MATRIX_SIZE; i++) {
+    if (order.front() == i) {
+      for (auto it = order.begin(); it != order.end(); ++it)
+	cout << (char) (*it + 'a');
+    } else {
+      if (!PRESENT[i])
+	cout << (char) (i + 'a');
+    }
+      
   }
     
-  for (auto it = order.begin(); it != order.end(); ++it) {
-    cout << (char) ('a' + *it) << endl;
-  }
+  // for (auto it = order.begin(); it != order.end(); ++it) {
+  //   cout << (char) ('a' + *it) << endl;
+  // }
+  cout << endl;
   
   return 0;
 }
