@@ -1,4 +1,4 @@
-CXX_FLAGS = -std=c++11 -Wall  -g 
+CXX_FLAGS = -std=c++11 -Wall  -g -O3
 
 % : %.cpp
 	$(CXX) $(CXX_FLAGS) -o $@ $? $(PIETRO) -DDEBUG

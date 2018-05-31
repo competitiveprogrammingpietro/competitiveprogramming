@@ -50,7 +50,7 @@ int DFS_Cycle(int node, int * VISITED) {
   return 0;
 }
 
-int test() {
+int __attribute__((optimize("O0"))) test() {
   int n;
   string a, b;
   
@@ -59,7 +59,8 @@ int test() {
   cin >> a;
   for (int i = 0; i < n-1; i++) {
     cin >> b;
-    
+
+    bool found = false;
     int min_length = a.length() < b.length() ? a.length() : b.length();
     for (int j = 0; j < min_length; j++) {
       if (a[j] != b[j]) {
@@ -67,6 +68,12 @@ int test() {
 	PRESENT[a[j] - 'a'] = PRESENT[b[j] - 'a'] = 1;
 	break;
       }
+
+      if (!found && b.length() < a.length()) {
+	printf("Impossible\n");
+	return 0;
+      }
+	
     }
     a = b;
     
@@ -109,8 +116,10 @@ int test() {
       for (auto it = order.begin(); it != order.end(); ++it)
 	cout << (char) (*it + 'a');
     } else {
-      if (!PRESENT[i])
-	cout << (char) (i + 'a');
+      if (!PRESENT[i]) {
+	printf("%c", (char) (i + 'a'));
+      }
+      //	cout << (char) (i + 'a');
     }
       
   }
@@ -118,7 +127,8 @@ int test() {
   // for (auto it = order.begin(); it != order.end(); ++it) {
   //   cout << (char) ('a' + *it) << endl;
   // }
-  cout << endl;
+  printf("\n");
+  //  cout << endl;
   
   return 0;
 }
