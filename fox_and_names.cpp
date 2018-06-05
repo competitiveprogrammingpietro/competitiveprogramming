@@ -135,5 +135,6 @@ int __attribute__((optimize("O0"))) test() {
 
 int main() {
   test();
+  return 0;
 }
 
