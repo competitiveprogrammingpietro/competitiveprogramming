@@ -4,8 +4,6 @@
 #include <set>
 #include <cstdlib>    
 using namespace std;
-
-
 struct SET {
   int item;
   int r;
@@ -66,8 +64,8 @@ int main() {
       
       cin >> type >> x >> y;
 
-      if (x > n || y > n ) {
-	// cout << "++" << endl;
+      if (x > n || y > n) {
+	cout << "++" << endl;
 	result++;
 	continue;
       }
@@ -75,38 +73,59 @@ int main() {
 
       xs = find_item(x);
       ys = find_item(y);
-      // cout << "find(" << x << ")=" << xs << endl;
-      // cout << "find(" << y << ")=" << ys << endl;
-      if (xs == -1 && ys == -1) {
-	SETS[A].insert(x);
-	SETS[B].insert(y);
-	continue;
-      }
-      
+      cout << "find(" << x << ")=" << xs << endl;
+      cout << "find(" << y << ")=" << ys << endl;
       switch (type) {
       case 1:
+
+	// 1. They are already present and they are not into the same set
 	if (xs != -1 && ys != -1 && xs != ys) {
 	  result++;
-	  // cout << "++" << endl;
+	  cout << "++" << endl;
 	}
+
+	// 2. They are not present, put them into the same set
+	else if (xs == -1 && ys == -1) {
+	  SETS[A].insert(x);
+	  SETS[A].insert(y);
+	  continue;
+	}
+
+	// 2. One of them is present whereas the other isn't, put it into the same set
 	else if (xs == -1 && ys != -1)
 	  SETS[ys].insert(x);
 	else
 	  SETS[xs].insert(y);
 	break;
       case 2:
+
+	// 1. Wrong hint
 	if (y == x) {
 	  result++;
 	}
+
+	// 2. None of them exist, insert them
+	else if (xs == -1 && ys == -1) {
+	  SETS[A].insert(x);
+	  SETS[B].insert(y);
+	}
+
+	// 3. The "eater" exists, put the other into the right set
 	else if (xs != -1 && ys == -1) {
 	  int destination = (xs + 1) % 3;
 	  SETS[destination].insert(y);
-	} else if (xs == -1 && ys != -1) {
-	  int destination = (ys + 1) % 3;
+	}
+
+	// 4. The "eaten" exists, put the other into the right set
+	else if (xs == -1 && ys != -1) {
+	  int destination = (ys + 2) % 3;
 	  SETS[destination].insert(x);
-	} else {
+	}
+
+	// 5. They both exist
+	else {
 	  if (ys != (xs + 1) % 3) {
-	    // cout << "++" << endl;
+	    cout << "++" << endl;
 	    result++;
 	  }
 	}
@@ -115,6 +134,4 @@ int main() {
     }
     cout << result << endl;
   }
-  // auto g = random_graph(100000, 100);
-  // cout << "[kruskal] " << g.kruskal() << endl;
 }
