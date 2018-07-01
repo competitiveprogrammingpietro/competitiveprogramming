@@ -1,137 +1,93 @@
+
+#define _CRT_SECURE_NO_WARNINGS 1
+#include <cassert>
+#include <cctype>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <iostream>
+#include <sstream>
+#include <iomanip>
+#include <string>
 #include <vector>
-#include <algorithm>
+#include <list>
 #include <set>
-#include <cstdlib>    
+#include <map>
+#include <stack>
+#include <queue>
+#include <algorithm>
+#include <iterator>
+#include <utility>
 using namespace std;
-struct SET {
-  int item;
-  int r;
-  struct SET * p;
 
-  SET(int item): item(item), r(0), p(this) { }
-  SET * UNION(SET * X, SET * Y);
-  SET * LINK(SET * X, SET * Y);
-  SET * FINDSET(SET * X);
-};
+template< class T > T _abs(T n) { return (n < 0 ? -n : n); }
+template< class T > T _max(T a, T b) { return (!(a < b) ? a : b); }
+template< class T > T _min(T a, T b) { return (a < b ? a : b); }
+template< class T > T sq(T x) { return x * x; }
+template< class T > T gcd(T a, T b) { return (b != 0 ? gcd<T>(b, a%b) : a); }
+template< class T > T lcm(T a, T b) { return (a / gcd<T>(a, b) * b); }
+template< class T > bool inside(T a, T b, T c) { return a<=b && b<=c; }
 
-SET * SET::UNION(SET * X, SET * Y) {
-  return LINK(FINDSET(X), FINDSET(Y));
-}
+#define MP(x, y) make_pair(x, y)
+#define SET(p) memset(p, -1, sizeof(p))
+#define CLR(p) memset(p, 0, sizeof(p))
+#define MEM(p, v) memset(p, v, sizeof(p))
+#define CPY(d, s) memcpy(d, s, sizeof(s))
+#define READ(f) freopen(f, "r", stdin)
+#define WRITE(f) freopen(f, "w", stdout)
+#define SZ(c) (int)c.size()
+#define PB(x) push_back(x)
+#define ff first
+#define ss second
+#define i64 long long
+#define ld long double
+#define pii pair< int, int >
+#define psi pair< string, int >
 
-SET * SET::LINK(SET * X, SET * Y)
-{
-  if (X->r > Y->r) {
-    Y->p = X;
-    return X;
-  } else {
-    X->p = Y;
-    if (X->r == Y->r)
-      Y->r = Y->r + 1;
-    return Y;
-  }
-}
+const double EPS = 1e-9;
+const int INF = 0x7f7f7f7f;
+const int MAX = 50001;
 
-SET * SET::FINDSET(SET * X)
-{
-  if (X != X->p)
-    return FINDSET(X->p);
-  return this;
-}
+int root[MAX], d[MAX];
 
-#define A 0
-#define B 1
-#define C 2
-set<int> SETS[3];
-
-int find_item(int elem) {
-  for (int i = A; i <= C; i++) {
-    if (SETS[i].find(elem) != SETS[i].end())
-      return i;
-  }
-  return -1;
+int find(int u) {
+	if(u == root[u]) return u;
+	int tmp = root[u];
+	root[u] = find(root[u]);
+	d[u] = d[tmp] + d[u];
+	return root[u];
 }
 
 int main() {
-  int tests, n, k;
-
-  cin >> tests;
-  for (int i = 0; i < tests; i++) {
-    cin >> n >> k;
-    int result = 0;
-    for (int j = 0; j < k; j++) {
-      int type, x, y, xs, ys;
-      
-      cin >> type >> x >> y;
-
-      if (x > n || y > n) {
-	cout << "++" << endl;
-	result++;
-	continue;
-      }
-
-
-      xs = find_item(x);
-      ys = find_item(y);
-      cout << "find(" << x << ")=" << xs << endl;
-      cout << "find(" << y << ")=" << ys << endl;
-      switch (type) {
-      case 1:
-
-	// 1. They are already present and they are not into the same set
-	if (xs != -1 && ys != -1 && xs != ys) {
-	  result++;
-	  cout << "++" << endl;
+	//READ("in.txt");
+	//WRITE("out.txt");
+	int test, cs, n, k, i, t, x, y, px, py, ans, tmp;
+	scanf("%d", &test);
+	for(cs = 1; cs <= test; cs++) {
+		scanf("%d %d", &n, &k);
+		for(i = 1; i <= n; i++) {
+			root[i] = i;
+			d[i] = 0;
+		}
+		ans = 0;
+		while(k--) {
+			scanf("%d %d %d", &t, &x, &y);
+			if(x > n || y > n) { ans++; continue; }
+			px = find(x);
+			py = find(y);
+			t--;
+			if(px == py) {
+				tmp = (d[x] - d[y]) % 3; if(tmp < 0) tmp += 3;
+				if(tmp != t) ans++;
+			}
+			else {
+				root[px] = py;
+				i = (d[x] - d[y] - t) % 3;
+				d[px] = i < 0? -i : -i+3;
+			}
+		}
+		printf("%d\n", ans);
 	}
-
-	// 2. They are not present, put them into the same set
-	else if (xs == -1 && ys == -1) {
-	  SETS[A].insert(x);
-	  SETS[A].insert(y);
-	  continue;
-	}
-
-	// 2. One of them is present whereas the other isn't, put it into the same set
-	else if (xs == -1 && ys != -1)
-	  SETS[ys].insert(x);
-	else
-	  SETS[xs].insert(y);
-	break;
-      case 2:
-
-	// 1. Wrong hint
-	if (y == x) {
-	  result++;
-	}
-
-	// 2. None of them exist, insert them
-	else if (xs == -1 && ys == -1) {
-	  SETS[A].insert(x);
-	  SETS[B].insert(y);
-	}
-
-	// 3. The "eater" exists, put the other into the right set
-	else if (xs != -1 && ys == -1) {
-	  int destination = (xs + 1) % 3;
-	  SETS[destination].insert(y);
-	}
-
-	// 4. The "eaten" exists, put the other into the right set
-	else if (xs == -1 && ys != -1) {
-	  int destination = (ys + 2) % 3;
-	  SETS[destination].insert(x);
-	}
-
-	// 5. They both exist
-	else {
-	  if (ys != (xs + 1) % 3) {
-	    cout << "++" << endl;
-	    result++;
-	  }
-	}
-	break;
-      }
-    }
-    cout << result << endl;
-  }
+	return 0;
 }
