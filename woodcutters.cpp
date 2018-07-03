@@ -15,13 +15,13 @@ int main()
 
   // We can always cull the first tree on the left
   result = 1;
-  last = coords[0] - heights[0];
+  last = coords[0];
   for (int i = 1; i < size - 1; i++) {
     int64_t l, r;
 
     l = coords[i] - heights[i];
     r = coords[i] + heights[i];
-
+    //    cout << "coords " << coords[i] << ", " << heights[i] <<  " l : " << l << " r: " << r << endl;
     if (l > last) {
       last = l;
       result++;
@@ -34,5 +34,5 @@ int main()
 
   // We can always cull the last tree
   result++;
-  cout << result << endl;
+  printf("%I64d\n", result);
 }
