@@ -2,30 +2,56 @@
 #include <vector>
 using namespace std;
 
-int LIS(vector<int>& S, int i)
+int binary_search(vector<int> A, int l, int r, int key)
 {
-  if (i + 1 >= S.size() || S[i] > S[i + 1])
-    return 1;
-  else
-    return 1 + LIS(S, i + 1);
+  while (r - l > 1) {
+    int m = l + (r - l) / 2;
+    if (A[m] >= key)
+      r = m;
+    else
+      l = m;
+  }
+  return r;
 }
 
-int main()
+int test()
 {
-  int size, max;
+  int size, next;
 
   cin >> size;
-  vector<int> input(size);
-  max = 0;
+
+  if (size == 0)
+    return 0;
+  
+  next = 1;
+  vector<int> input(size), ends(size, 0);
 
   for (int i = 0; i < size; i++) {
     cin >> input[i];
   }
 
   for (int i = 0; i < size; i++) {
-    int res = LIS(input, i);
-    max = (res > max) ? res : max;
+    if (input[i] < ends[0]) {
+      ends[0] = input[i];
+    }
+    else if (ends[next - 1] < input[i]) {
+      ends[next++] = input[i];
+    } else {
+      ends[binary_search(ends, 0, next - 1, input[i])] = input[i];
+    }
   }
+  
+  return next;
+}
 
-  cout << max << endl;
+int main()
+{
+  int tests;
+
+  cin >> tests;
+
+  for (int i = 0; i < tests; i++)
+    cout << test() << endl;
+
+  return 0;
 }
