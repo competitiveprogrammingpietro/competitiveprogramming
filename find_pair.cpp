@@ -1,6 +1,6 @@
 /* Pietro Paolini
  * Competitive programming Universita' degli studi di Pisa.
- * Complexity: O(n^2)
+ * Complexity: O(lgN)
  * Source: http://codeforces.com/problemset/problem/160/C?locale=en
  */
 #include <iostream>
@@ -61,64 +61,21 @@ Pair find_pair(vector<int>& input, long long k) {
  // Sort input
   sort(input.begin(), input.end());
 
-  long long x, y, n, count, i;
+  long long x, y, n, r, i;
 
   n = input.size();
   x = (k - 1)/n;
   y = (k - 1)%n;
-  cout << "x" <<  x << endl;
-  cout << "y" <<  y << endl;
-  if (input[x] != input[x+1]) {
-    return Pair(input[x], input[y]);    
-  }
-
-  count = 1;
-  i = x;
-  while (i < input.size() -1 && input[i] == input[i + 1]) {
-    count++;
+  
+  r = count(input.begin(), input.end(), input[x]);
+  i = 0;
+  while (i < n) {
+    if (input[i] == input[x])
+      break;
     i++;
   }
-
-
-  if (y <= count * count)
-    return Pair(input[x], input[x]);
-
-  return Pair(input[x], input[y - count*count]);
-
-  
-//   // Sort input
-//   sort(input.begin(), input.end());
-
-//   if (k == 1)
-//     return Pair(*input.begin(), *input.begin());
-
-//   if (k == input.size() * input.size())
-//     return Pair(*(input.end()-1), *(input.end()-1));
-  
-//   Pair last(*input.begin(), *input.begin()), current(0, 0);
-//   for (auto it = input.begin(); it != input.end(); ++it) {
-//     for (auto inner = input.begin(); inner != input.end(); ++inner) {
-//       if (it == input.begin() && inner == input.begin())
-// 	continue;
-
-//       current = Pair(*it, *inner);
-//       Pair ptr(0, 0);
-//       if (current > last || current == last) {
-// 	ptr = last;
-// 	last = current;
-//       }
-//       else {
-// 	ptr = current;
-//       }
-// #ifdef DEBUG
-//       cout << ptr << endl;
-// #endif     
-//       if (k == count)
-//       	return ptr;
-//       count++;
-//     }
-//   }
-//   return Pair(*(input.end()-1), *(input.end()-1));
+  y = ((k - 1) - i * n) / r;
+  return Pair(input[x], input[y]);
 }
 
 int main() {
