@@ -1,7 +1,7 @@
 /*
  * Competive Programming - UniPi.
  * Pietro Paolini - 2017
- * Complexity : O(nlgn)
+ * Complexity : O(n)
  * Source: https://practice.geeksforgeeks.org/problems/firing-employees/0
  */
 #include <iostream>
