@@ -36,7 +36,7 @@ void compute_seniority(vector<int>& input, vector<int>& senior, int employee) {
   if (senior_level == -1)
     compute_seniority(input, senior, input[employee] - 1);
   
-  senior[employee] = senior_level + 1;
+  senior[employee] = senior[input[employee] - 1] + 1;
   return;
 }
 
@@ -47,21 +47,23 @@ int firing_employees(vector<int>& input) {
   vector<bool> prime(input.size() * 2 + 1, true);
   int count = 0;
   
-  cout << "Prime ";
+  //  cout << "Prime ";
   compute_prime(prime);
-  for (int i = 0; i < prime.size(); ++i) {
-    cout << "[" << i << "]:" << prime[i];
-  }
-  cout << endl;
+  // for (int i = 0; i < prime.size(); ++i) {
+  //   cout << "[" << i << "," << prime[i] << "]";
+  // }
+  // cout << endl;
+  
   for (int i = 0; i < input.size(); ++i) {
     compute_seniority(input, senior, i);
   }
 
-  cout << "Senior [";
-  for (auto it = senior.begin(); it != senior.end(); ++it) {
-    cout << *it << ",";
-  }
-
+  // cout << "Senior [";
+  // for (auto it = senior.begin(); it != senior.end(); ++it) {
+  //   cout << *it << ",";
+  // }
+  // cout << "]" << endl;
+  
   for (int i = 0; i < input.size(); i++) {
 
     if (input[i] == 0)
