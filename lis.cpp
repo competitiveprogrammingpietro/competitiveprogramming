@@ -1,7 +1,12 @@
 #include <iostream>
 #include <vector>
 using namespace std;
-
+// O(LGN)
+/*
+ * 
+ * 
+ *
+ */
 int binary_search(vector<int>& A, int l, int r, int key)
 {
   while (r - l > 1) {
@@ -40,6 +45,11 @@ int test()
     } else {
       ends[binary_search(ends, -1, next - 1, input[i])] = input[i];
     }
+    // cout << "-------" << endl;
+    // for (int u = 0; u < size; u++) {
+    //   cout << ends[u] << endl;
+    // }
+    // cout << "-------" << endl;
   }
   return next;
 }
@@ -50,8 +60,10 @@ int main()
 
   cin >> tests;
 
-  for (int i = 0; i < tests; i++)
-    cout << test() << endl;
-
-  return 0;
+  int result = 0;
+  for (int i = 0; i < tests; i++) {
+    result = test();
+    cout << result << endl;
+  }
+  return result;
 }
