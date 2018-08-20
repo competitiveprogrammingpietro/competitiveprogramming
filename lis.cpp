@@ -1,10 +1,9 @@
 #include <iostream>
 #include <vector>
 using namespace std;
-// O(LGN)
 /*
- * 
- * 
+ * O(lgN)
+ * https://practice.geeksforgeeks.org/problems/longest-increasing-subsequence/0
  *
  */
 int binary_search(vector<int>& A, int l, int r, int key)
