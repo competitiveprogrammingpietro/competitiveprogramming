@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -21,39 +22,35 @@ int binary_search(vector<int>& A, int l, int r, int key)
   return r;
 }
 
-int test()
+vector<int> testlgn(vector<int>& input)
 {
+  
   int size, next;
 
-  cin >> size;
+  size = input.size();
 
-  if (size == 0)
-    return 0;
-  
-  vector<int> input(size), ends(size, 0);
-
-  for (int i = 0; i < size; i++) {
-    cin >> input[i];
-  }
-
+  vector<int> ends(size, 0), lis(size, 0);
   ends[0] = input[0];
-  next = 1;
+  lis[0] = next = 1;
   for (int i = 1; i < size; i++) {
-    if (input[i] < ends[0]) {
+    if (input[i] <= ends[0]) {
       ends[0] = input[i];
+      lis[i] = 1;
     }
     else if (ends[next - 1] < input[i]) {
       ends[next++] = input[i];
+      lis[i] = next;
     } else {
+      lis[i] = next;
       ends[binary_search(ends, -1, next - 1, input[i])] = input[i];
     }
-    // cout << "-------" << endl;
-    // for (int u = 0; u < size; u++) {
-    //   cout << ends[u] << endl;
-    // }
-    // cout << "-------" << endl;
   }
-  return next;
+  cout << "-------" << endl;
+  for (int u = 0; u < size; u++) {
+    cout << lis[u] << endl;
+  }
+  cout << "-------" << endl;
+  return lis;
 }
 
 
@@ -109,6 +106,9 @@ int main()
     }
     int result = test(input);
     cout << result << endl;
+     // testlgn(input);
+     // reverse(input.begin(), input.end());
+     // testlgn(input);
   }
     
 }
