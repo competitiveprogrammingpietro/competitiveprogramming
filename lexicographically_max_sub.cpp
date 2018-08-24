@@ -2,6 +2,8 @@
 #include <string>
 
 using namespace std;
+// Source: http://codeforces.com/problemset/problem/196/A?locale=en
+
 int main()
 {
   string input, output;

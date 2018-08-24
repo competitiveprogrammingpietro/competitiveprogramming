@@ -7,6 +7,10 @@ using namespace std;
 
 #define MAX 50
 
+/*
+ * Source : https://practice.geeksforgeeks.org/problems/x-total-shapes/0
+ * O(MN)
+ */
 struct graph {
   int matrix[MAX + 1][MAX + 1] = { {0} };
   int color[MAX + 1][MAX + 1] = { {0} };

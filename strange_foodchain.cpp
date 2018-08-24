@@ -21,6 +21,7 @@
 #include <utility>
 using namespace std;
 
+// TODO: sort out
 template< class T > T _abs(T n) { return (n < 0 ? -n : n); }
 template< class T > T _max(T a, T b) { return (!(a < b) ? a : b); }
 template< class T > T _min(T a, T b) { return (a < b ? a : b); }

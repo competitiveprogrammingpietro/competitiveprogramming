@@ -8,6 +8,9 @@
 #include <algorithm>
 #include <map>
 
+/*
+ * Source: http://codeforces.com/problemset/problem/427/C?locale=en
+ */
 using namespace std;
 class SCC {
 public:

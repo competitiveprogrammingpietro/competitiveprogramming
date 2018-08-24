@@ -2,6 +2,7 @@
  * Competive Programming - UniPi.
  * Pietro Paolini - 2017
  * Complexity : O(n)
+ * https://practice.geeksforgeeks.org/problems/leaders-in-an-array/0
  */
 #include <iostream>
 #include <vector>

@@ -6,6 +6,7 @@ string a("1");
 string b("14");
 string c("144");
 
+//  Source: http://codeforces.com/problemset/problem/320/A?locale=en
 int main()
 {
   string input;

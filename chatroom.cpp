@@ -2,7 +2,7 @@
 #include <string>
 
 using namespace std;
-
+// Source: http://codeforces.com/problemset/problem/58/A?locale=en
 string hello("hello");
 
 int main()

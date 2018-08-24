@@ -2,6 +2,7 @@
  * Competive Programming - UniPi.
  * Pietro Paolini - 2017
  * Complexity : O(n)
+ * https://practice.geeksforgeeks.org/problems/maximum-of-all-subarrays-of-size-k/0
  */
 #include <iostream>
 #include <vector>

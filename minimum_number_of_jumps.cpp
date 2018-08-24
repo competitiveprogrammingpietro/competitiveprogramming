@@ -1,5 +1,7 @@
 #include <iostream>
 #include <vector>
+
+// Source: https://practice.geeksforgeeks.org/problems/minimum-number-of-jumps/0
 using namespace std;
 
 int test(vector<int>& A) 

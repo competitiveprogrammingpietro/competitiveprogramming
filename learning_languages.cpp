@@ -7,7 +7,9 @@
 #include <cstring>
 
 using namespace std;
-
+/*
+ * Source: http://codeforces.com/problemset/problem/277/A?locale=en
+ */
 class graph {
 public:
   int **           matrix;

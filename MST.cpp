@@ -1,7 +1,7 @@
 //
 // Minimum Spanning Tree (Kruskal)
 //
-// 
+// Source : https://www.spoj.com/problems/MST/
 // Description
 //   Finding minimum spanning tree.
 //

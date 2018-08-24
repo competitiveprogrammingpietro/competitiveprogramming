@@ -5,7 +5,7 @@
 #include <algorithm>
 
 using namespace std;
-
+// Source: http://codeforces.com/problemset/problem/141/C?locale=en
 /* 
   Code from https://github.com/spaghetti-source/algorithm/blob/master/data_structure/fenwick_tree.cc
  */

@@ -4,6 +4,9 @@
 #include <vector>
 #include <stack>
 
+/*
+ * Source: https://practice.geeksforgeeks.org/problems/bipartite-graph/1
+ */
 using namespace std;
 
 #define MAX 50

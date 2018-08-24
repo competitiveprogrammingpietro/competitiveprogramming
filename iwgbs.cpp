@@ -1,7 +1,10 @@
 #include <iostream>
 #include <vector>
 #include <stdint.h>
+
+// Source: http://www.spoj.com/problems/IWGBS/
 using namespace std;
+
 vector<uint64_t> MEMOIZE(10000, 0);
 
 

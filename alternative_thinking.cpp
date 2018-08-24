@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 
+// Source: http://codeforces.com/problemset/problem/603/A?locale=en
 using namespace std;
 int main()
 {

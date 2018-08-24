@@ -2,7 +2,7 @@
 #include <vector>
 
 using namespace std;
-
+// Source: http://codeforces.com/contest/545/problem/C?locale=en
 int main()
 {
   int64_t size, result, last;

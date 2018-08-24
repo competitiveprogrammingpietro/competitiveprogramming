@@ -16,7 +16,7 @@ int check_preorder(std::vector<int>& input) {
   stack<int> Q;
 
   for (auto it = input.begin(); it != input.end(); ++it) {
-
+    //    cout << *it << " < " << root << endl;
     if (*it < root)
       return 0;
 

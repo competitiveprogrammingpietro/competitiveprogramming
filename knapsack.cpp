@@ -2,6 +2,7 @@
 #include <vector>
 using namespace std;
 
+// Source: http://www.practice.geeksforgeeks.org/problem-page.php?pid=909
 int K[101][101] = { {0} };
 
 int test()

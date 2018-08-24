@@ -6,6 +6,9 @@
 
 using namespace std;
 
+/*
+ * Source: http://codeforces.com/problemset/problem/510/C?locale=en
+ */
 int G[MATRIX_SIZE][MATRIX_SIZE] = { {0} };
 int PRESENT[MATRIX_SIZE] = { 0 };
 

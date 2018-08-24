@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
-
+// Source: http://codeforces.com/problemset/problem/596/B?locale=en
 using namespace std;
 int main()
 {
