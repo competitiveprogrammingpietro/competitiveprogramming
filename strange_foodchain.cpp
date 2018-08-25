@@ -2,6 +2,11 @@
 #import <vector>
 #import <cstdlib>
 
+/*
+ * Source: https://www.spoj.com/submit/CHAIN/
+ * TODO: works well locally get SIGABRT on Spoj (c++ vs g++)
+ * Complexity: O(n)
+ */
 using namespace std;
 int compute_distance(vector<int> predecessor, vector<int> distance, int node)
 {
