@@ -4,28 +4,37 @@
 
 // Source : https://practice.geeksforgeeks.org/problems/longest-palindromic-subsequence/0
 using namespace std;
-int N[1000][1000] = {{ -1 }};
 
-void test(string input, int i, int j)
+int test(string input)
 {
-  if (N[i][j] != -1)
-    return;
+  int N[1005][1005];
+
+  for (int i = 0; i < input.size(); i++) {
+    N[i][i] = 1;
+  }
+
+  for (int l = 2; l <= input.size(); l++) {
+    for (int i = 0; i < input.size() - l + 1; i++) {
+	int j = i + l - 1;
+	if (input[i] == input[j] && j == 2)
+	  N[i][j] = 2;
+	else if (input[i] == input[j]) {
+	  N[i][j] = 2 + N[i + 1][j - 1];
+	}
+	else {
+	  N[i][j] =  max(N[i + 1][j], N[i][j - 1]);
+	}
+      }
+  }
   
-  if (i > j) {
-    N[i][j] =  0;
-  }
-  else if (i == j) {
-    N[i][j] = 1;
-  }
-  else if (input[i] == input[j]) {
-     test(input, i + 1, j - 1);
-     N[i][j] = 2 + N[i + 1][j - 1];
-  }
-  else {
-    test(input, i + 1, j);
-    test(input, i, j - 1);
-    N[i][j] =  max(N[i + 1][j], N[i][j - 1]);
-  }
+  // cout << endl;
+  // for (int i = 0; i < input.size(); i++) {
+  //   for (int j = 0; j < input.size(); j++) {
+  //     cout << N[i][j] << " ";
+  //   }
+  //   cout << endl;
+  // }
+  return N[0][input.size() - 1];
   //  cout << "(" << i << "," << j << ") " << N[i][j] << endl;
 }
 
@@ -39,15 +48,8 @@ int main()
     string input;
 
     cin >> input;
-    for (int i = 0; i < input.size(); i++) {
-      for (int j = 0; j < input.size(); j++) {
-	if (i == j)
-	  N[i][j] = 1;
-	else
-	  N[i][j] = -1;
-      }
-    }
-    test(input, 0, input.size() - 1);
-    cout << N[0][input.size() - 1] << endl;
+        int result = test(input);
+	//int result = lps(input);
+    cout << result << endl;
   }
 }
