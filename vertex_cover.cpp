@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <utility>
-
+#include <vector>
 /*
  * https://www.spoj.com/problems/PT07X/
  * Complexity O(V + E)
@@ -11,6 +11,48 @@
 
 using namespace std;
 
+vector<int> children_of(int **N, int size, int n)
+{
+  vector<int> result;
+  for (int i = 1; i < size + 1; i++) {
+    if (N[n][i])
+      result.push_back(i);
+  }
+  return result;
+}
+
+int solve(int **N, int * V, int size, int node) 
+{
+  cout << "solve(" << node << ")" << endl;
+  vector<int> children = children_of(N, size, node);
+
+  if (children.size() == 0)
+    return 0;
+	
+  // Root case
+  int root = 1;
+  for (auto it = children.begin(); it != children.end(); ++it) {
+    cout << V[*it] << endl;
+    if (V[*it])
+      continue;
+    
+    root += solve(N, V, size, *it);
+    V[*it] = 1;
+  }
+
+  // Non root case
+  int non_root = children.size();
+  for (auto it = children.begin(); it != children.end(); ++it) {
+    vector<int> granchildren = children_of(N, size, *it);
+    for (auto inner_it = granchildren.begin(); inner_it != granchildren.end(); ++inner_it) {
+      if (V[*inner_it])
+	continue;
+      non_root += solve(N, V,size, *inner_it);
+      V[*inner_it] = 1;
+    }
+  }
+  return (root > non_root) ? non_root : root;
+}
 
 int main()
 {
@@ -30,7 +72,7 @@ int main()
   
   for (int i = 1; i < size + 1; i++) {
     N[i] = new int[size + 1]();
-    V[i] = false;
+    V[i] = 0;
   }
   for (int i = 0; i < size - 1; i++) {
     int u, v;
@@ -40,6 +82,8 @@ int main()
     //    cout << "(" << u << "," << v << ")" << N[v][u] << endl;// Sth wrong here 
   }
 
+  cout << solve(N, V, size, 1) << endl;
+  return 0;
   // for (int i = 1; i < size + 1; i++) {
   //   for (int j = 0; j < size + 1; j++) {
   //     cout << N[i][j] << " ";
