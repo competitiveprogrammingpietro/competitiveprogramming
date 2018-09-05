@@ -10,56 +10,61 @@
  */
 
 using namespace std;
+struct node {
+  vector<int> children;
+};
 
-vector<int> children_of(int **N, int size, int n)
+int solve(vector<node>& graph, bool * V, int node, int parent)
 {
-  vector<int> result;
-  for (int i = 1; i < size + 1; i++) {
-    if (N[n][i])
-      result.push_back(i);
-  }
-  return result;
-}
-
-int solve(int **N, int * V, int size, int node) 
-{
-  cout << "solve(" << node << ")" << endl;
-  vector<int> children = children_of(N, size, node);
-
-  if (children.size() == 0)
+  //cout << "solve(" << node << "," << parent << ") " << endl;
+  if (graph[node].children.size() == 1 && graph[node].children[0] == parent) {
+    //cout << "solve(" << node << ") = " << 0 << endl;
     return 0;
-	
+  }
+
+  V[node] = 1;
   // Root case
   int root = 1;
+  vector<int>& children = graph[node].children;
   for (auto it = children.begin(); it != children.end(); ++it) {
-    cout << V[*it] << endl;
     if (V[*it])
       continue;
-    
-    root += solve(N, V, size, *it);
-    V[*it] = 1;
+    //cout << "HereI" << endl;
+    root += solve(graph, V, *it, node);
   }
 
   // Non root case
-  int non_root = children.size();
+  int non_root = 0;
+  vector<int> granchildren;
   for (auto it = children.begin(); it != children.end(); ++it) {
-    vector<int> granchildren = children_of(N, size, *it);
-    for (auto inner_it = granchildren.begin(); inner_it != granchildren.end(); ++inner_it) {
-      if (V[*inner_it])
+     if (V[*it])
+      continue;
+    
+    non_root += 1;
+    struct node child = graph[*it];
+    for (auto init = child.children.begin(); init != child.children.end(); ++init) {
+      if (V[*init])
 	continue;
-      non_root += solve(N, V,size, *inner_it);
-      V[*inner_it] = 1;
+      // if (*init == node)
+      // 	continue;
+      //      cout << "HereII" << endl;
+      non_root += solve(graph, V, *init, *it);
     }
   }
-  return (root > non_root) ? non_root : root;
+  
+  if (non_root == 0) {
+    //cout << "\t solve(" << node << ") = " << root << endl;
+    return root;
+  }
+  int res =  (root > non_root) ? non_root : root;
+  //cout << "\t solve(" << node << ") = " << res << "{" << root <<"," << non_root << "}"  << endl;
+  return res;
 }
 
 int main()
 {
   int size;
-  vector<int> nodes;
-  int** N;
-  int *V;
+  bool *V;
   
   cin >> size;
 
@@ -67,67 +72,17 @@ int main()
     cout << 1 << endl;
     return 0;
   }
-  N = new int*[size + 1]();
-  V = new int[size + 1]();
   
-  for (int i = 1; i < size + 1; i++) {
-    N[i] = new int[size + 1]();
-    V[i] = 0;
-  }
+  vector<node> graph(size + 1);
+  V = new bool[size + 1]();
+  
   for (int i = 0; i < size - 1; i++) {
     int u, v;
     cin >> u >> v;
-    N[u][v] = 1;
-    N[v][u] = 1;
-    //    cout << "(" << u << "," << v << ")" << N[v][u] << endl;// Sth wrong here 
+    graph[u].children.push_back(v);
+    graph[v].children.push_back(u);
   }
 
-  cout << solve(N, V, size, 1) << endl;
-  return 0;
-  // for (int i = 1; i < size + 1; i++) {
-  //   for (int j = 0; j < size + 1; j++) {
-  //     cout << N[i][j] << " ";
-  //   }
-  //   cout << endl;
-  // }
-  //  cout << "-----" << endl;
-  for (int i = 1; i < size + 1; i++) {
-
-    if (V[i])
-      continue;
-    
-    // Pick the first edge up and remove all the incident edges
-    for (int j = 1; j < size + 1; j++) {
-
-      if (N[i][j] == 0)
-	continue;
-
-      if (V[j]) 
-	continue;
-
-      //      cout << "Examining " << i << "," << j << endl;
-      nodes.push_back(i);
-      nodes.push_back(j);
-      V[i] = V[j] = 1;
-     
-      for (int z = 1; z < size + 1; z++) {
-
-      	// Columns
-      	N[z][i] = N[z][j] = 0;
-
-      	//Rows
-      	N[i][z] = N[j][z] = 0;
-      }
-    }
-    // cout << "-------------------" << endl;
-    // for (int i = 1; i < size + 1; i++) {
-    //   for (int j = 0; j < size + 1; j++) {
-    // 	cout << N[i][j] << " ";
-    //   }
-    //   cout << endl;
-    // }
-    // cout << "-------------------" << endl;
-  }
-  cout << nodes.size() << endl;
+  cout << solve(graph, V, 1, 0) << endl;
   return 0;
 }
