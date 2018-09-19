@@ -4,8 +4,8 @@
 #include <vector>
 /*
  * https://www.spoj.com/problems/PT07X/
- * Complexity O(V + E)
- * TODO: not quite clear why it does not pass last case
+ * Complexity O(V)
+ * TODO: not quite clear why it does not pass last case (11)
  * http://discuss.spoj.com/t/vertex-cover/30039 
  */
 
@@ -14,67 +14,65 @@ struct node {
   vector<int> children;
 };
 
-int solve(vector<node>& graph, bool * V, int node, int parent)
+int V[10001] = { 0 };
+int  R[10001] = { 0 };
+
+int solve(vector<node>& graph, int node, int parent)
 {
-  //cout << "solve(" << node << "," << parent << ") " << endl;
-  if (graph[node].children.size() == 1 && graph[node].children[0] == parent) {
-    //cout << "solve(" << node << ") = " << 0 << endl;
-    return 0;
-  }
-
   V[node] = 1;
-  // Root case
-  int root = 1;
+  int nroot, root;
+  //  cout << "Solve(" << node << "," << parent << ")" << endl;
+  nroot = root = 0;
+
   vector<int>& children = graph[node].children;
+
+  // Just a link to the parent
+  if (children.size() == 1)
+    return 1;
+  
+  // Non root
   for (auto it = children.begin(); it != children.end(); ++it) {
-    if (V[*it])
+    if (*it == parent)
       continue;
-    //cout << "HereI" << endl;
-    root += solve(graph, V, *it, node);
+    R[*it] = solve2(graph, *it, node);
+    nroot += R[*it];
   }
 
-  // Non root case
-  int non_root = 0;
-  vector<int> granchildren;
+  // root
+  root = 1;
   for (auto it = children.begin(); it != children.end(); ++it) {
-     if (V[*it])
+    if (*it == parent)
       continue;
-    
-    non_root += 1;
-    struct node child = graph[*it];
-    for (auto init = child.children.begin(); init != child.children.end(); ++init) {
-      if (V[*init])
+    vector<int>& granchildren = graph[*it].children;
+    for (auto init = granchildren.begin(); init != granchildren.end(); ++init) {
+      if (*init == node)
 	continue;
-      // if (*init == node)
-      // 	continue;
-      //      cout << "HereII" << endl;
-      non_root += solve(graph, V, *init, *it);
+      if (!V[*init])
+	root += solve2(graph, *init, node);
+      else
+	root += R[*init];
     }
   }
-  
-  if (non_root == 0) {
-    //cout << "\t solve(" << node << ") = " << root << endl;
+
+  if (nroot == 0)
     return root;
-  }
-  int res =  (root > non_root) ? non_root : root;
-  //cout << "\t solve(" << node << ") = " << res << "{" << root <<"," << non_root << "}"  << endl;
-  return res;
+  else
+    return root > nroot ? nroot : root;
 }
 
 int main()
 {
   int size;
-  bool *V;
   
   cin >> size;
-
+  V[0] = 1;
   if (size == 1) {
-    cout << 1 << endl;
+    cout << 0 << endl;
     return 0;
   }
   
   vector<node> graph(size + 1);
-  V = new bool[size + 1]();
+  vector<int> res(size + 1);
   
   for (int i = 0; i < size - 1; i++) {
     int u, v;
@@ -82,7 +80,7 @@ int main()
     graph[u].children.push_back(v);
     graph[v].children.push_back(u);
   }
-
-  cout << solve(graph, V, 1, 0) << endl;
+  
+  cout << solve(graph,1, 0) << endl;
   return 0;
 }
